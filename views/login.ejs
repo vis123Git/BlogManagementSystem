@@ -1,0 +1,34 @@
+<%- include('./layouts/header.ejs') %>
+    <div class="container mb-5 mt-5">
+        <h1>Login</h1>
+
+
+        <% if(typeof message !=='undefined' ){ %>
+
+            <p style="color: red;"><%=message %></p>
+            <% } %>
+
+
+
+                <form action="" method="POST">
+                    <div class="row mt-3">
+                        <div class="col-sm-4">
+                            <input class="form-control" type="email" name="email" placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-4">
+                            <input class="form-control" type="password" name="password"
+                                placeholder="Enter your password">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-4">
+                            <input type="submit" class="btn btn-success" value="Login">
+                        </div>
+                    </div>
+                </form>
+
+                <a href="/forget-password">Forget Password</a>
+    </div>
+    <%- include('./layouts/footer.ejs') %>

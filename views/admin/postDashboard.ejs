@@ -1,0 +1,104 @@
+<%- include('../layouts/admin-header.ejs') %>
+
+  <!-- Page Content  -->
+  <div id="content" class="p-4 p-md-5 pt-5">
+    <h2 class="mb-4">Add post</h2>
+    <div class="container">
+      <form action="" method="POST">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5>Title</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <input type="text" name="title" required placeholder="Create your post..." class="w-100" />
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-info"  data-toggle="modal"  data-target="#uploadModal">
+            Upload Image
+          </button>
+          <input type="hidden" name="image" id="image">
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-sm-12">
+            <h5>Content</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <textarea name="content" row="5" placeholder="Enter post content..." required class="w-100"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <input type="submit" value="Submit" class="btn-sm btn-info" />
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Upload Image</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <input type="file" name="image" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+    <% if(typeof message !=='undefined' ){%>
+      <p style="color: green;"><%= message %></p>
+     <% } %>
+  </div>
+
+
+  <script>
+    $(document).ready(function(){
+      $('#uploadForm').submit((function(event){
+        event.preventDefault();
+
+        $.ajax({
+          url : '/upload-post-image',
+          type : "POST",
+          data : new FormData(this),
+          contentType : false,
+          cache : false,
+          processData : false,
+          success : function(data){
+            if (data.success==true) {
+              $('#image').val(data.path)
+              alert(data.message)
+              $('#uploadModal').modal('hide')
+            } else {
+              alert(data.message)
+            }
+          }
+        })
+      }))
+    })
+  </script>
+  <%- include('../layouts/admin-footer.ejs') %>
