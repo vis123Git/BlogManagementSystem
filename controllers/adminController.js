@@ -104,11 +104,12 @@ const addPost = async (req, res) => {
 
         })
         const postData = await post.save()
+        res.send({success:true, message:"Post added successfuly", _id:postData._id})
 
-        res.render('admin/postDashboard', {message:"Post added sucessfuly."})
+        // res.render('admin/postDashboard', {message:"Post added sucessfuly."})
 
     } catch (error) {
-        console.log(error.message);
+        res.send({success:false, message:error.message})
     }
 }
 

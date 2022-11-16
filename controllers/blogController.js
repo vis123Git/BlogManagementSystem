@@ -48,7 +48,7 @@ const loadBlog = async(req, res)=>{
 const loadPost = async(req,res)=> {
     try {
         const post = await Post.findOne({_id:req.params.id});
-        console.log("post===",post);
+        // console.log("post===",post);
         res.render('post', {post:post});
     } catch (error) {
         console.log(error);
@@ -72,7 +72,7 @@ const addComment = async(req,res)=>{
                 "comments": {_id:comment_id,username:username, email:email,comment:comment}
             }
         })
-        res.status(200).send({success:true, message:"Comment added successfuly"})
+        res.status(200).send({success:true, message:"Comment added successfuly", _id:comment_id})
     } catch (error) {
         res.status(200).send({success:false, message:error.message})
     }
@@ -81,6 +81,7 @@ const addComment = async(req,res)=>{
 
 const doReply =  async(req, res)=> {
     try {
+        console.log("doReply call---");
         var reply_id = new ObjectID();
         await Post.updateOne({
             "_id" : ObjectID(req.body.post_id),
@@ -91,7 +92,7 @@ const doReply =  async(req, res)=> {
             }
         })
         sendCommentMail(req.body.name, req.body.comment_email, req.body.post_id)
-        res.status(200).send({success:true, message:"Reply added"})
+        res.status(200).send({success:true, message:"Reply added", _id:reply_id})
 
 
         

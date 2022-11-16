@@ -3,7 +3,14 @@ const app = express();
 const PORT = 5100;
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/BMS").then(()=> {
+var http = require('http').createServer(app)
+var { Server, Socket } = require('socket.io')
+var io = new Server(http, {})
+
+
+
+// MONGOOSE CONNECTION
+mongoose.connect("mongodb://127.0.0.1:27017/BMS").then(() => {
     console.log("Database connect");
 });
 
@@ -22,12 +29,39 @@ const user_route = require('./routes/userRoute')
 app.use('/', user_route)
 
 //blog routes
-const blogRoute = require('./routes/blogRoutes')
+const blogRoute = require('./routes/blogRoutes');
 app.use('/', blogRoute)
 
 
+io.on("connection", function (socket) {
+    console.log("user connected");
 
-app.listen(PORT, ()=> {
+    socket.on("new_post", function (formData) {
+        // console.log("formData===", formData);
+        socket.broadcast.emit("new_post", formData)
+    });
+
+
+    socket.on("new_comment", function (comment) {
+        // console.log("comment===", comment);
+        io.emit("new_comment", comment)
+    });
+
+
+    socket.on("new_reply", function (reply) {
+        console.log("reply===", reply);
+        io.emit("new_reply", reply)
+    });
+})
+
+//Listen server with http and socket.io
+http.listen(PORT, () => {
     console.log(`Sever is listening to port ${PORT}`);
 })
+
+
+//Listen with express server
+// app.listen(PORT, ()=> {
+//     console.log(`Sever is listening to port ${PORT}`);
+// })
 

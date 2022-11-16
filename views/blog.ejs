@@ -1,10 +1,10 @@
 <%- include('./layouts/header.ejs') %>
 
-    <div class="container px-4 ">
+    <div class="container px-4 posts">
 
 
         <% if(posts.length>0){
-            for(let i=0; i < posts.length; i++ ){ %>
+            for(let i=posts.length-1; i >= 0; i-- ){ %>
                 <div class="row  align-item-ceter my-5 ">
                     <div class="col-lg-7">
 
@@ -34,8 +34,35 @@
                 <% } }else{ %>
                     <h1 class="alert-danger mt-4 px-5">Posts not avaliable!!</h1>
                     <% } %>
-
-
-
     </div>
+
+    <script>
+        var socket = io()
+        socket.on("new_post", function(formData){
+            // console.log(formData);
+            var html = "";
+            var image = "https://dummyimage.com/600x300/0b0b0b/fffcff.png"
+            if (formData.image !='') {
+                image = formData.image
+            }
+            html+= `
+            <div class="row  align-item-ceter my-5 ">
+                    <div class="col-lg-7">
+
+                     
+                        <img src="`+image+`" alt=""
+                                    class="img-fluid rounded mb-4 mb-lg-0">
+                             
+                                
+                    </div>
+                    <div class="col-lg-5">
+                        <h1 class="font-weight-light">`+formData.title+`</h1>
+                        <p>`+formData.content+`</p>
+                        <a href="/post/`+formData._id+`" class="btn btn-primary">Read more</a>
+                    </div>
+                </div>
+            `;
+            $('.posts').prepend(html);
+        })
+    </script>
     <%- include('./layouts/footer.ejs') %>

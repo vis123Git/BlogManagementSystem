@@ -4,7 +4,7 @@
   <div id="content" class="p-4 p-md-5 pt-5">
     <h2 class="mb-4">Add post</h2>
     <div class="container">
-      <form action="" method="POST">
+      <form action="" method="POST" id="addPost">
         <div class="row">
           <div class="col-sm-12">
             <h5>Title</h5>
@@ -78,6 +78,8 @@
 
   <script>
     $(document).ready(function(){
+
+
       $('#uploadForm').submit((function(event){
         event.preventDefault();
 
@@ -99,6 +101,39 @@
           }
         })
       }))
-    })
+    });
+
+
+
+
+    $('#addPost').submit((function(event){
+        event.preventDefault();
+        var obj  = $(this)
+
+        var formData =  {}
+        $.each($(this).serializeArray(), function(i, field){
+          formData[field.name] = field.value
+        })
+        $.ajax({
+          url : '/create-post',
+          type : "POST",
+          data : formData ,
+          success : function(data){
+            if (data.success==true) {
+              alert(data.message)
+
+              $(obj)[0].reset();
+              $("#image").val('');
+
+
+              formData._id = data._id;
+              var socket = io();
+              socket.emit("new_post", formData)
+            } else {
+              alert(data.message)
+            }
+          }
+        })
+      }))
   </script>
   <%- include('../layouts/admin-footer.ejs') %>
