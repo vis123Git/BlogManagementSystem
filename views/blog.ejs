@@ -5,7 +5,7 @@
 
         <% if(posts.length>0){
             for(let i=posts.length-1; i >= 0; i-- ){ %>
-                <div class="row  align-item-ceter my-5 ">
+                <div class="row  align-item-ceter my-5 " id="post-<%= posts[i]._id %>">
                     <div class="col-lg-7">
 
                         <% if(posts[i].image !=='undefined' && posts[i].image !=='' ){ %>
@@ -38,6 +38,13 @@
 
     <script>
         var socket = io()
+
+        socket.on("delete_post", function(postId){
+            document.getElementById("post-"+postId).remove()
+
+        })
+
+
         socket.on("new_post", function(formData){
             // console.log(formData);
             var html = "";
@@ -48,12 +55,8 @@
             html+= `
             <div class="row  align-item-ceter my-5 ">
                     <div class="col-lg-7">
-
-                     
                         <img src="`+image+`" alt=""
-                                    class="img-fluid rounded mb-4 mb-lg-0">
-                             
-                                
+                                    class="img-fluid rounded mb-4 mb-lg-0">          
                     </div>
                     <div class="col-lg-5">
                         <h1 class="font-weight-light">`+formData.title+`</h1>

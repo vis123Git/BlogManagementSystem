@@ -17,10 +17,9 @@
         </div>
         <div class="row mt-4">
           <div class="col-sm-12">
-            <button type="button" class="btn btn-info"  data-toggle="modal"  data-target="#uploadModal">
-            Upload Image
-          </button>
-          <input type="hidden" name="image" id="image">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">
+              Upload Image</button>
+            <input type="hidden" name="image" id="image">
           </div>
         </div>
 
@@ -42,98 +41,101 @@
 
       </form>
     </div>
+  </div>
 
 
 
 
 
-
-<!-- Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Upload Image</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+  <!-- Modal -->
+  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Upload Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="uploadForm" enctype="multipart/form-data">
+          <div class="modal-body">
+            <input type="file" name="image" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </div>
+        </form>
       </div>
-      <form id="uploadForm" enctype="multipart/form-data">
-        <div class="modal-body">
-          <input type="file" name="image" required>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Upload</button>
-        </div>
-      </form>
     </div>
   </div>
-</div>
-    <% if(typeof message !=='undefined' ){%>
-      <p style="color: green;"><%= message %></p>
-     <% } %>
-  </div>
+  <% if(typeof message !=='undefined' ){%>
+    <p style="color: green;">
+      <%= message %>
+    </p>
+    <% } %>
 
 
-  <script>
-    $(document).ready(function(){
+
+      <script>
+        $(document).ready(function () {
 
 
-      $('#uploadForm').submit((function(event){
-        event.preventDefault();
+          $('#uploadForm').submit((function (event) {
+            event.preventDefault();
 
-        $.ajax({
-          url : '/upload-post-image',
-          type : "POST",
-          data : new FormData(this),
-          contentType : false,
-          cache : false,
-          processData : false,
-          success : function(data){
-            if (data.success==true) {
-              $('#image').val(data.path)
-              alert(data.message)
-              $('#uploadModal').modal('hide')
-            } else {
-              alert(data.message)
+            $.ajax({
+              url: '/upload-post-image',
+              type: "POST",
+              data: new FormData(this),
+              contentType: false,
+              cache: false,
+              processData: false,
+              success: function (data) {
+                if (data.success == true) {
+                  $('#image').val(data.path)
+                  alert(data.message)
+                  $('#uploadModal').modal('hide')
+                } else {
+                  alert(data.message)
+                }
+              }
+            })
+          }))
+        });
+
+
+
+
+        $('#addPost').submit((function (event) {
+          event.preventDefault();
+          var obj = $(this)
+
+          var formData = {}
+          $.each($(this).serializeArray(), function (i, field) {
+            formData[field.name] = field.value
+          })
+          $.ajax({
+            url: '/create-post',
+            type: "POST",
+            data: formData,
+            success: function (data) {
+              if (data.success == true) {
+                alert(data.message)
+
+                $(obj)[0].reset();
+                $("#image").val('');
+
+
+                formData._id = data._id;
+                var socket = io();
+                socket.emit("new_post", formData)
+              } else {
+                alert(data.message)
+              }
             }
-          }
-        })
-      }))
-    });
-
-
-
-
-    $('#addPost').submit((function(event){
-        event.preventDefault();
-        var obj  = $(this)
-
-        var formData =  {}
-        $.each($(this).serializeArray(), function(i, field){
-          formData[field.name] = field.value
-        })
-        $.ajax({
-          url : '/create-post',
-          type : "POST",
-          data : formData ,
-          success : function(data){
-            if (data.success==true) {
-              alert(data.message)
-
-              $(obj)[0].reset();
-              $("#image").val('');
-
-
-              formData._id = data._id;
-              var socket = io();
-              socket.emit("new_post", formData)
-            } else {
-              alert(data.message)
-            }
-          }
-        })
-      }))
-  </script>
-  <%- include('../layouts/admin-footer.ejs') %>
+          })
+        }))
+      </script>
+      <%- include('../layouts/admin-footer.ejs') %>

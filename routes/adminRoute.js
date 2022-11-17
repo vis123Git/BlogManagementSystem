@@ -56,6 +56,12 @@ admin_route.get('/create-post',adminLoginAuth.isLogin, adminController.loadPostD
 admin_route.post('/create-post',adminLoginAuth.isLogin, adminController.addPost);
 
 admin_route.post('/upload-post-image',adminLoginAuth.isLogin, upload.single("image"), adminController.uploadPostImage);
+admin_route.post('/delete-post',adminLoginAuth.isLogin, adminController.deletePost);
+
+admin_route.get('/edit-post/:id',adminLoginAuth.isLogin, adminController.loadEditPost);
+
+admin_route.post('/update-post',adminLoginAuth.isLogin, adminController.updatePost);
+
 
 
 

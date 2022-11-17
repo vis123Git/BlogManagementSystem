@@ -52,6 +52,11 @@ io.on("connection", function (socket) {
         console.log("reply===", reply);
         io.emit("new_reply", reply)
     });
+
+    socket.on("delete_post", function (postId) {
+        console.log("postId===", postId);
+        socket.broadcast.emit("delete_post", postId)
+    });
 })
 
 //Listen server with http and socket.io
