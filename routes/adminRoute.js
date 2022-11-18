@@ -62,6 +62,11 @@ admin_route.get('/edit-post/:id',adminLoginAuth.isLogin, adminController.loadEdi
 
 admin_route.post('/update-post',adminLoginAuth.isLogin, adminController.updatePost);
 
+admin_route.get('/settings',adminLoginAuth.isLogin, adminController.loadSettings);
+admin_route.post('/settings',adminLoginAuth.isLogin, adminController.saveSettings);
+
+
+
 
 
 

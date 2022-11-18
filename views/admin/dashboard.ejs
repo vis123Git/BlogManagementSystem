@@ -23,7 +23,7 @@
                 <tr>
                   <td><%= i++;%></td>
                   <td><%= post.title %></td>
-                  <td><%= post.content %></td>
+                  <td><%- post.content %></td>
                   <td><img src="<%= post.image %>" alt="<%= post.image %>" width="100px"></td>
                   <td><a href="#" class="btn btn-success deletePost" data-id="<%= post._id %>">Delete</a></td>
                   <td><a href="/edit-post/<%= post._id %>" class="btn btn-primary" >Edit</a></td>

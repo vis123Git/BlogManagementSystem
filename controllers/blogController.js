@@ -1,4 +1,6 @@
 const Post =require('../models/postModel');
+const Setting = require('../models/settingModel');
+
 const {ObjectID, ObjectId} = require('mongodb');
 const config = require('../config/config')
 const nodemailer = require('nodemailer')
@@ -39,12 +41,20 @@ const sendCommentMail = async(name, email, post_id)=> {
 
 const loadBlog = async(req, res)=>{
     try {
-        const posts = await Post.find({});
-        res.render('blog', {posts:posts});
+        var setting = await Setting.findOne({});
+        var limit = setting.post_limit
+        const posts = await Post.find({}).limit(limit);
+        res.render('blog', {
+           posts:posts,
+           postLimit : limit
+        
+        });
     } catch (error) {
         console.log(error);
     }
 }
+
+
 const loadPost = async(req,res)=> {
     try {
         const post = await Post.findOne({_id:req.params.id});
@@ -102,9 +112,23 @@ const doReply =  async(req, res)=> {
 }
 
 
+ 
+const getPosts = async(req, res)=>{
+    try {
+       
+        const posts = await Post.find({}).skip(req.params.start).limit(req.params.limit);
+        res.send(posts)
+        
+    } catch (error) {
+        res.status(200).send({success:false, message:error.message})
+    }
+}
+
+
 module.exports = { 
     loadBlog,
     loadPost,
     addComment,
-    doReply
+    doReply,
+    getPosts
 }
